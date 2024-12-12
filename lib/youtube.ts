@@ -1,10 +1,7 @@
-// app/page.js or app/your-page/page.js
-
-import { getAccessToken } from "@/app/api/auth/[...nextauth]/route"
-import React from "react"
+// lib/youtube.ts
 
 // Function to fetch the user's channel ID
-async function fetchChannelId(accessToken: string) {
+export async function fetchChannelId(accessToken: string) {
   try {
     console.log("Step 1: Fetching channel ID...")
 
@@ -36,11 +33,38 @@ async function fetchChannelId(accessToken: string) {
   }
 }
 
-// Function to fetch the user's playlists
-async function fetchPlaylists(apiKey: string, accessToken: string) {
-  try {
-    console.log("Step 2: Fetching playlists...")
+// // Function to fetch the user's playlists
+// export async function fetchPlaylists(apiKey: string, accessToken: string) {
+//   try {
+//     console.log("Step 2: Fetching playlists...")
 
+//     const playlistResponse = await fetch(
+//       `https://www.googleapis.com/youtube/v3/playlists?part=snippet%2CcontentDetails&maxResults=25&mine=true&key=${apiKey}`,
+//       {
+//         method: "GET",
+//         headers: {
+//           Authorization: `Bearer ${accessToken}`,
+//           Accept: "application/json",
+//         },
+//       }
+//     )
+
+//     if (!playlistResponse.ok) {
+//       throw new Error(
+//         `Failed to fetch playlists: ${playlistResponse.statusText}`
+//       )
+//     }
+
+//     const data = await playlistResponse.json()
+//     return data.items // Return the playlists data
+//   } catch (error) {
+//     console.error("Error during fetch operation for playlists:", error)
+//     throw error
+//   }
+// }
+
+export async function fetchPlaylists(apiKey: string, accessToken: string) {
+  try {
     const playlistResponse = await fetch(
       `https://www.googleapis.com/youtube/v3/playlists?part=snippet%2CcontentDetails&maxResults=25&mine=true&key=${apiKey}`,
       {
@@ -59,7 +83,14 @@ async function fetchPlaylists(apiKey: string, accessToken: string) {
     }
 
     const data = await playlistResponse.json()
-    return data.items // Return the playlists data
+
+    // Map the API response to match the component's format
+    return data.items.map((playlist: any) => ({
+      id: playlist.id,
+      title: playlist.snippet.title,
+      imageUrl: playlist.snippet.thumbnails.high.url,
+      videoCount: playlist.contentDetails.itemCount,
+    }))
   } catch (error) {
     console.error("Error during fetch operation for playlists:", error)
     throw error
@@ -67,7 +98,7 @@ async function fetchPlaylists(apiKey: string, accessToken: string) {
 }
 
 // Function to fetch the items from a specific playlist
-async function fetchPlaylistItems(
+export async function fetchPlaylistItems(
   playlistId: string,
   apiKey: string,
   accessToken: string
@@ -102,31 +133,3 @@ async function fetchPlaylistItems(
     throw error
   }
 }
-
-// Main page component
-const Page = async () => {
-  const apiKey: any = process.env.YOUTUBE_API_KEY
-  const accessToken: any = await getAccessToken()
-
-  try {
-    // Fetch channel ID first
-    const channelId = await fetchChannelId(accessToken)
-    console.log("Channel ID:", channelId)
-
-    // Then fetch playlists using the channel ID
-    const playlists = await fetchPlaylists(apiKey, accessToken)
-    console.log("User Playlists:", playlists)
-
-    return (
-      <div>
-        <h1>User Playlists</h1>
-        <pre>{JSON.stringify(playlists, null, 2)}</pre>
-      </div>
-    )
-  } catch (error) {
-    console.error("Failed to fetch data:", error)
-    return <div>Error fetching playlists.</div>
-  }
-}
-
-export default Page
