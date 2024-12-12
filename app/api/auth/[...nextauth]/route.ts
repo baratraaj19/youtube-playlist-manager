@@ -22,15 +22,20 @@ export const getUserSession = async (): Promise<User | null> => {
 }
 
 // Validate environment variables
-const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID
-const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET
-const NEXTAUTH_SECRET = process.env.NEXTAUTH_SECRET
+const NEXT_PUBLIC_GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID
+const NEXT_PUBLIC_GOOGLE_CLIENT_SECRET =
+  process.env.NEXT_PUBLIC_GOOGLE_CLIENT_SECRET
+const NEXT_PUBLIC_NEXTAUTH_SECRET = process.env.NEXT_PUBLIC_NEXTAUTH_SECRET
 
-if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET || !NEXTAUTH_SECRET) {
+if (
+  !NEXT_PUBLIC_GOOGLE_CLIENT_ID ||
+  !NEXT_PUBLIC_GOOGLE_CLIENT_SECRET ||
+  !NEXT_PUBLIC_NEXTAUTH_SECRET
+) {
   console.error("Missing critical environment variables", {
-    GOOGLE_CLIENT_ID: !!GOOGLE_CLIENT_ID,
-    GOOGLE_CLIENT_SECRET: !!GOOGLE_CLIENT_SECRET,
-    NEXTAUTH_SECRET: !!NEXTAUTH_SECRET,
+    NEXT_PUBLIC_GOOGLE_CLIENT_ID: !!NEXT_PUBLIC_GOOGLE_CLIENT_ID,
+    NEXT_PUBLIC_GOOGLE_CLIENT_SECRET: !!NEXT_PUBLIC_GOOGLE_CLIENT_SECRET,
+    NEXT_PUBLIC_NEXTAUTH_SECRET: !!NEXT_PUBLIC_NEXTAUTH_SECRET,
   })
   throw new Error("Missing critical NextAuth configuration")
 }
@@ -99,7 +104,7 @@ const insertUserData = async (profile: any, account: any) => {
 const baseUrl = "http://localhost:3000/"
 
 const authOption: NextAuthOptions = {
-  secret: NEXTAUTH_SECRET, // Add this line
+  secret: NEXT_PUBLIC_NEXTAUTH_SECRET, // Add this line
   debug: true,
   session: {
     strategy: "jwt",
@@ -122,8 +127,8 @@ const authOption: NextAuthOptions = {
   },
   providers: [
     GoogleProvider({
-      clientId: GOOGLE_CLIENT_ID,
-      clientSecret: GOOGLE_CLIENT_SECRET,
+      clientId: NEXT_PUBLIC_GOOGLE_CLIENT_ID,
+      clientSecret: NEXT_PUBLIC_GOOGLE_CLIENT_SECRET,
       authorization: {
         params: {
           scope:
