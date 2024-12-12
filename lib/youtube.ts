@@ -97,7 +97,6 @@ export async function fetchPlaylists(apiKey: string, accessToken: string) {
   }
 }
 
-// Function to fetch the items from a specific playlist
 export async function fetchPlaylistItems(
   playlistId: string,
   apiKey: string,
@@ -108,7 +107,7 @@ export async function fetchPlaylistItems(
 
     // Construct the API URL with the provided playlistId
     const playlistItemsResponse = await fetch(
-      `https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${playlistId}&key=${apiKey}`,
+      `https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=${playlistId}&key=${apiKey}`,
       {
         method: "GET",
         headers: {
@@ -124,12 +123,67 @@ export async function fetchPlaylistItems(
       )
     }
 
-    const data = await playlistItemsResponse.json()
+    const playlistData = await playlistItemsResponse.json()
 
-    // Return the playlist items from the response
-    return data.items
+    // Process each video and fetch the duration
+    const itemsWithDuration = await Promise.all(
+      playlistData.items.map(async (item: any) => {
+        const videoId = item.snippet.resourceId.videoId
+
+        // Fetch video details to get the duration
+        const videoDetailsResponse = await fetch(
+          `https://youtube.googleapis.com/youtube/v3/videos?part=contentDetails&id=${videoId}&key=${apiKey}`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+              Accept: "application/json",
+            },
+          }
+        )
+
+        if (!videoDetailsResponse.ok) {
+          throw new Error(
+            `Failed to fetch video details: ${videoDetailsResponse.statusText}`
+          )
+        }
+
+        const videoDetailsData = await videoDetailsResponse.json()
+        const durationIso = videoDetailsData.items[0]?.contentDetails?.duration
+
+        // Convert ISO 8601 duration to a time format
+        const duration = iso8601ToTimeFormat(durationIso)
+
+        return {
+          ...item,
+          duration, // Add the duration to the item
+        }
+      })
+    )
+
+    return itemsWithDuration
   } catch (error) {
     console.error("Error during fetch operation for playlist items:", error)
     throw error
   }
+}
+// Convert ISO 8601 duration (e.g., PT2H3M40S) to a time format (e.g., 2:03:40)
+function iso8601ToTimeFormat(duration: string): string {
+  const match = duration.match(/PT(?:(\d+)H)?(?:(\d+)M)?(\d+)S/)
+
+  if (match) {
+    const hours = match[1] ? match[1] : "0" // Default to 0 if no hours part
+    const minutes = match[2] ? match[2] : "0" // Default to 0 if no minutes part
+    const seconds = match[3].padStart(2, "0") // Ensure seconds are always 2 digits
+
+    if (hours !== "0") {
+      // If hours are present, return in "H:MM:SS" format
+      return `${hours}:${minutes.padStart(2, "0")}:${seconds}`
+    } else {
+      // If hours are not present, return in "MM:SS" format
+      return `${minutes}:${seconds}`
+    }
+  }
+
+  return "0:00" // Default fallback in case of invalid duration
 }
