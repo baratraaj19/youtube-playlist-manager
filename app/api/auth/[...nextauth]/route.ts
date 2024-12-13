@@ -138,15 +138,55 @@ const authOption: NextAuthOptions = {
       },
     }),
   ],
+  // callbacks: {
+  //   async signIn({ account, profile }) {
+  //     console.log("SignIn callback:", { account, profile })
+  //     if (!profile?.email) {
+  //       console.error("No email in profile")
+  //       return false
+  //     }
+  //     await insertUserData(profile, account)
+  //     return true
+  //   },
+  //   async redirect({ url, baseUrl }) {
+  //     console.log("Redirect callback:", { url, baseUrl })
+  //     return `${baseUrl}/dashboard`
+  //   },
+  //   session({ session, token }) {
+  //     console.log("Session callback:", { session, token })
+  //     if (session.user) {
+  //       ;(session.user as any).id = token.id
+  //       ;(session as any).accessToken = token.access_token
+  //     }
+  //     return session
+  //   },
+  //   async jwt({ token, account }) {
+  //     console.log("JWT callback:", { token, account })
+  //     if (account?.access_token) {
+  //       token.access_token = account.access_token
+  //     }
+  //     return token
+  //   },
+  // },
+
   callbacks: {
     async signIn({ account, profile }) {
-      console.log("SignIn callback:", { account, profile })
+      console.log("SignIn callback triggered:", { account, profile })
+
+      // Log cases where email is missing
       if (!profile?.email) {
-        console.error("No email in profile")
-        return false
+        console.warn("Unauthorized attempt: No email in profile")
+        return true // Allow unauthorized users to sign in
       }
-      await insertUserData(profile, account)
-      return true
+
+      // Insert or update user data
+      try {
+        await insertUserData(profile, account)
+      } catch (error) {
+        console.error("Error during user data insertion:", error)
+      }
+
+      return true // Allow the user to sign in regardless of authorization
     },
     async redirect({ url, baseUrl }) {
       console.log("Redirect callback:", { url, baseUrl })
