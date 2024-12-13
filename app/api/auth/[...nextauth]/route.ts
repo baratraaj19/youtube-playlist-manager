@@ -112,32 +112,60 @@ const authOption: NextAuthOptions = {
     signIn: "/login",
     error: "/login",
   },
-  cookies: {
-    sessionToken: {
-      name: `next-auth.session-token`,
-      options: {
-        httpOnly: true,
-        sameSite: "lax",
-        path: "/",
-        secure: process.env.NODE_ENV === "production",
-      },
-    },
-  },
+  // cookies: {
+  //   sessionToken: {
+  //     name: `next-auth.session-token`,
+  //     options: {
+  //       httpOnly: true,
+  //       sameSite: "lax",
+  //       path: "/",
+  //       secure: process.env.NODE_ENV === "production",
+  //     },
+  //   },
+  // },
   providers: [
     GoogleProvider({
       clientId: NEXT_PUBLIC_GOOGLE_CLIENT_ID,
       clientSecret: NEXT_PUBLIC_GOOGLE_CLIENT_SECRET,
-      // authorization: {
-      //   params: {
-      //     scope:
-      //       "openid profile email https://www.googleapis.com/auth/youtube.readonly",
-      //     access_type: "offline",
-      //     response_type: "code",
-      //     prompt: "consent",
-      //   },
-      // },
+      authorization: {
+        params: {
+          scope:
+            "openid profile email https://www.googleapis.com/auth/youtube.readonly",
+          access_type: "offline",
+          response_type: "code",
+          prompt: "consent",
+        },
+      },
     }),
   ],
+  callbacks: {
+    async signIn({ account, profile }) {
+      if (!profile?.email) {
+        console.error("No email in profile")
+        return false
+      }
+
+      await insertUserData(profile, account)
+      return true
+    },
+    async redirect({ url, baseUrl }) {
+      console.log("Redirect URL:", url, "Base URL:", baseUrl)
+      return `${baseUrl}/dashboard`
+    },
+    session({ session, token }) {
+      if (session.user) {
+        ;(session.user as any).id = token.id
+        ;(session as any).accessToken = token.access_token
+      }
+      return session
+    },
+    async jwt({ token, account }) {
+      if (account?.access_token) {
+        token.access_token = account.access_token
+      }
+      return token
+    },
+  },
 }
 
 //   callbacks: {
