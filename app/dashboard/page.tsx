@@ -44,13 +44,13 @@ export default function DashboardPage() {
     }
   }
 
-  // useEffect(() => {
-  //   const timer = setTimeout(() => {
-  //     handleTabSwitch()
-  //   }, 1000)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      handleTabSwitch()
+    }, 1000)
 
-  //   return () => clearTimeout(timer)
-  // }, [])
+    return () => clearTimeout(timer)
+  }, [])
 
   const fetchPlaylistsData = async () => {
     if (!session || !(session as any).accessToken) return
