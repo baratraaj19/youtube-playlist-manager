@@ -9,6 +9,7 @@ export default function LoginPage() {
   const router = useRouter()
   const { data: session, status } = useSession()
   const search = useSearchParams()
+
   useEffect(() => {
     console.log(status)
     console.log(search.get("callback"))

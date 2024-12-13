@@ -25,17 +25,17 @@ export const getUserSession = async (): Promise<User | null> => {
 const NEXT_PUBLIC_GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID
 const NEXT_PUBLIC_GOOGLE_CLIENT_SECRET =
   process.env.NEXT_PUBLIC_GOOGLE_CLIENT_SECRET
-const NEXT_PUBLIC_NEXTAUTH_SECRET = process.env.NEXT_PUBLIC_NEXTAUTH_SECRET
+const NEXTAUTH_SECRET = process.env.NEXTAUTH_SECRET
 
 if (
   !NEXT_PUBLIC_GOOGLE_CLIENT_ID ||
   !NEXT_PUBLIC_GOOGLE_CLIENT_SECRET ||
-  !NEXT_PUBLIC_NEXTAUTH_SECRET
+  !NEXTAUTH_SECRET
 ) {
   console.error("Missing critical environment variables", {
     NEXT_PUBLIC_GOOGLE_CLIENT_ID: !!NEXT_PUBLIC_GOOGLE_CLIENT_ID,
     NEXT_PUBLIC_GOOGLE_CLIENT_SECRET: !!NEXT_PUBLIC_GOOGLE_CLIENT_SECRET,
-    NEXT_PUBLIC_NEXTAUTH_SECRET: !!NEXT_PUBLIC_NEXTAUTH_SECRET,
+    NEXTAUTH_SECRET: !!NEXTAUTH_SECRET,
   })
   throw new Error("Missing critical NextAuth configuration")
 }
@@ -102,7 +102,7 @@ const insertUserData = async (profile: any, account: any) => {
 }
 
 const authOption: NextAuthOptions = {
-  secret: NEXT_PUBLIC_NEXTAUTH_SECRET,
+  secret: NEXTAUTH_SECRET,
   debug: true,
   session: {
     strategy: "jwt",
