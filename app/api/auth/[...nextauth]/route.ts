@@ -102,31 +102,40 @@ if (
 }
 
 const authOption: NextAuthOptions = {
-  secret: NEXTAUTH_SECRET,
-  debug: true,
+  // secret: NEXTAUTH_SECRET,
+  // debug: true,
   session: {
     strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
-  pages: {
-    signIn: "/login",
-    error: "/login",
-  },
-  cookies: {
-    sessionToken: {
-      name: `next-auth.session-token`,
-      options: {
-        httpOnly: true,
-        sameSite: "lax",
-        path: "/",
-        secure: process.env.NODE_ENV === "production",
-      },
-    },
-  },
+  // pages: {
+  //   signIn: "/login",
+  //   error: "/login",
+  // },
+  // cookies: {
+  //   sessionToken: {
+  //     name: `next-auth.session-token`,
+  //     options: {
+  //       httpOnly: true,
+  //       sameSite: "lax",
+  //       path: "/",
+  //       secure: process.env.NODE_ENV === "production",
+  //     },
+  //   },
+  // },
   providers: [
     GoogleProvider({
       clientId: NEXT_PUBLIC_GOOGLE_CLIENT_ID,
       clientSecret: NEXT_PUBLIC_GOOGLE_CLIENT_SECRET,
+      // authorization: {
+      //   params: {
+      //     scope:
+      //       "openid profile email https://www.googleapis.com/auth/youtube.readonly",
+      //     access_type: "offline",
+      //     response_type: "code",
+      //     prompt: "consent",
+      //   },
+      // },
     }),
   ],
 }
