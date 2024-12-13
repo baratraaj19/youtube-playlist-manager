@@ -102,16 +102,16 @@ if (
 }
 
 const authOption: NextAuthOptions = {
-  // secret: NEXTAUTH_SECRET,
-  // debug: true,
+  secret: NEXTAUTH_SECRET,
+  debug: true,
   session: {
     strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
-  // pages: {
-  //   signIn: "/login",
-  //   error: "/login",
-  // },
+  pages: {
+    signIn: "/login",
+    error: "/login",
+  },
   // cookies: {
   //   sessionToken: {
   //     name: `next-auth.session-token`,
