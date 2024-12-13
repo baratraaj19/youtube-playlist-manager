@@ -1,4 +1,3 @@
-// lib/youtube.ts
 export async function fetchPlaylists(apiKey: string, accessToken: string) {
   try {
     const playlistResponse = await fetch(
@@ -87,12 +86,11 @@ export async function fetchPlaylistItems(
         const videoDetailsData = await videoDetailsResponse.json()
         const durationIso = videoDetailsData.items[0]?.contentDetails?.duration
 
-        // Convert ISO 8601 duration to a time format
         const duration = iso8601ToTimeFormat(durationIso)
 
         return {
           ...item,
-          duration, // Add the duration to the item
+          duration,
         }
       })
     )
@@ -103,23 +101,20 @@ export async function fetchPlaylistItems(
     throw error
   }
 }
-// Convert ISO 8601 duration (e.g., PT2H3M40S) to a time format (e.g., 2:03:40)
 function iso8601ToTimeFormat(duration: string): string {
   const match = duration.match(/PT(?:(\d+)H)?(?:(\d+)M)?(\d+)S/)
 
   if (match) {
-    const hours = match[1] ? match[1] : "0" // Default to 0 if no hours part
-    const minutes = match[2] ? match[2] : "0" // Default to 0 if no minutes part
-    const seconds = match[3].padStart(2, "0") // Ensure seconds are always 2 digits
+    const hours = match[1] ? match[1] : "0"
+    const minutes = match[2] ? match[2] : "0"
+    const seconds = match[3].padStart(2, "0")
 
     if (hours !== "0") {
-      // If hours are present, return in "H:MM:SS" format
       return `${hours}:${minutes.padStart(2, "0")}:${seconds}`
     } else {
-      // If hours are not present, return in "MM:SS" format
       return `${minutes}:${seconds}`
     }
   }
 
-  return "0:00" // Default fallback in case of invalid duration
+  return "0:00"
 }

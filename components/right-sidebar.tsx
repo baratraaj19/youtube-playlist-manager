@@ -89,7 +89,6 @@ export function RightSidebar({
                   <h4 className='font-medium text-white'>
                     {video.snippet.title}
                   </h4>
-                  {/* Display the video duration here */}
                   <p className='text-sm text-gray-400'>{video.duration}</p>
                 </div>
                 <input

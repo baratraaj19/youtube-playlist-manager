@@ -3,7 +3,6 @@
 import { useDrag, useDrop } from "react-dnd"
 import { Card } from "@/components/ui/card"
 import { MoreHorizontal } from "lucide-react"
-import { Badge } from "@/components/ui/badge" // Assuming you have a Badge component
 
 interface PlaylistCardProps {
   id: string
