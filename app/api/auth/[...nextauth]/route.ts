@@ -101,8 +101,6 @@ const insertUserData = async (profile: any, account: any) => {
   }
 }
 
-const baseUrl = "http://localhost:3000/"
-
 const authOption: NextAuthOptions = {
   secret: NEXT_PUBLIC_NEXTAUTH_SECRET, // Add this line
   debug: true,

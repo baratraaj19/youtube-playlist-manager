@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Search, HelpCircle, ArrowRight } from "lucide-react"
 import ProfileButton from "@/components/profile-button"
-import { fetchPlaylists, fetchPlaylistItems } from "@/lib/youtube" // Import the helper function
+import { fetchPlaylists, fetchPlaylistItems } from "@/lib/youtube"
 import { supabase } from "@/lib/supabase"
 
 export default function DashboardPage() {
@@ -19,9 +19,11 @@ export default function DashboardPage() {
   const [playlists, setPlaylists] = useState<any[]>([])
   const [selectedPlaylist, setSelectedPlaylist] = useState<any>(null)
   const [activeView, setActiveView] = useState("product-playlists")
-  const [playlistItems, setPlaylistItems] = useState<any[]>([]) // Store fetched playlist items
-  const [isLoadingPlaylists, setIsLoadingPlaylists] = useState(true)
+  const [playlistItems, setPlaylistItems] = useState<any[]>([])
+  const [isLoadingPlaylists, setIsLoadingPlaylists] = useState(false)
   const [isLoadingPlaylistItems, setIsLoadingPlaylistItems] = useState(false)
+
+  console.log("Access token:", (session as any)?.accessToken)
 
   // Redirect to login if not authenticated
   useEffect(() => {
@@ -30,27 +32,23 @@ export default function DashboardPage() {
     }
   }, [status])
 
-  // Fetch playlists when the component mounts
-  useEffect(() => {
-    if (session) {
-      const fetchData = async () => {
-        const apiKey: any = process.env.NEXT_PUBLIC_YOUTUBE_API_KEY
-        const accessToken: any = (session as any).accessToken // Use the session's access token
-        try {
-          const playlistsData = await fetchPlaylists(apiKey, accessToken)
-          setPlaylists(playlistsData)
-          setIsLoadingPlaylists(false)
-        } catch (error) {
-          console.error("Error fetching playlists:", error)
-          setIsLoadingPlaylists(false)
-        }
-      }
+  const fetchPlaylistsData = async () => {
+    if (!session) return // Ensure the session is available
 
-      fetchData()
+    const apiKey: any = process.env.NEXT_PUBLIC_YOUTUBE_API_KEY
+    const accessToken: any = (session as any).accessToken
+    try {
+      setIsLoadingPlaylists(true)
+      const playlistsData = await fetchPlaylists(apiKey, accessToken)
+      setPlaylists(playlistsData)
+    } catch (error) {
+      console.error("Error fetching playlists:", error)
+    } finally {
+      setIsLoadingPlaylists(false)
     }
-  }, [session])
+  }
 
-  // Fetch playlist items when a playlist is selected
+  const accessToken: any = (session as any).accessToken
   useEffect(() => {
     if (selectedPlaylist) {
       const fetchItems = async () => {
@@ -64,19 +62,17 @@ export default function DashboardPage() {
             accessToken
           )
           setPlaylistItems(items)
-          setIsLoadingPlaylistItems(false)
         } catch (error) {
           console.error("Error fetching playlist items:", error)
+        } finally {
           setIsLoadingPlaylistItems(false)
         }
       }
-
       fetchItems()
     }
   }, [selectedPlaylist])
 
-  // Show loading state while checking authentication
-  if (status === "loading" || isLoadingPlaylists) {
+  if (status === "loading") {
     return (
       <div className='h-screen w-screen flex items-center justify-center bg-[#13131A]'>
         <div className='text-white'>Loading...</div>
@@ -84,7 +80,6 @@ export default function DashboardPage() {
     )
   }
 
-  // Only render dashboard content if authenticated
   if (!session) {
     return null
   }
@@ -100,27 +95,29 @@ export default function DashboardPage() {
   }
 
   const saveLayout = async () => {
-    if (!session) return
+    if (!session) {
+      console.error("Session is not available.")
+      return
+    }
 
-    const layout = playlists.map((playlist) => playlist.id) // Get the playlist IDs
-    const userId = (session as any).user.id // User ID from session
+    const userEmail = (session as any).user.email
+
+    if (!userEmail) {
+      console.error("User email is null or undefined.")
+      return
+    }
+
+    const layout = playlists.map((playlist) => playlist.id)
 
     try {
-      // Save the layout to Supabase
-      const { data, error } = await supabase.from("layouts").upsert(
-        [
-          {
-            user_id: userId,
-            layout: layout, // Directly pass the array for jsonb type
-          },
-        ],
-        { onConflict: "user_id" } // Correct usage of onConflict
-      )
+      const { data, error } = await supabase
+        .from("newusers")
+        .upsert([{ email: userEmail, layout: layout }], { onConflict: "email" }) // Ensure conflict resolution based on email
 
       if (error) {
         console.error("Error saving layout:", error)
       } else {
-        console.log("Layout saved successfully:", data)
+        console.log("Layout saved successfully:", layout)
       }
     } catch (error) {
       console.error("Error saving layout:", error)
@@ -130,20 +127,31 @@ export default function DashboardPage() {
   const loadLayout = async () => {
     if (!session) return
 
-    const userId = (session as any).user.id
+    const userEmail = (session as any).user.email
+
+    if (!userEmail) {
+      console.error("User email is null or undefined.")
+      return
+    }
 
     try {
       const { data, error } = await supabase
-        .from("layouts")
-        .select("layout")
-        .eq("user_id", userId)
-        .single() // Get a single layout entry for the user
+        .from("newusers") // Query the newusers table
+        .select("layout") // Select the layout field
+        .eq("email", userEmail) // Use email to query the user
+        .single()
 
       if (error) {
         console.error("Error loading layout:", error)
       } else {
         const savedLayout = data?.layout || []
-        setPlaylists(savedLayout) // Set the playlists state based on the saved layout
+
+        // Reorder playlists according to savedLayout order
+        const reorderedPlaylists = savedLayout
+          .map((id: string) => playlists.find((playlist) => playlist.id === id)) // Find the playlist objects by ID
+          .filter(Boolean) // Filter out any undefined values
+
+        setPlaylists(reorderedPlaylists) // Set the playlists to the reordered list
       }
     } catch (error) {
       console.error("Error loading layout:", error)
@@ -160,6 +168,12 @@ export default function DashboardPage() {
                 Product Playlists
               </h2>
               <div className='space-x-4'>
+                <Button
+                  onClick={fetchPlaylistsData}
+                  className='bg-[#3A3AF1] hover:bg-[#3A3AF1]/80 text-white'>
+                  Fetch playlist
+                </Button>
+
                 <Button
                   onClick={saveLayout}
                   className='bg-[#3A3AF1] hover:bg-[#3A3AF1]/80 text-white'>
@@ -186,14 +200,14 @@ export default function DashboardPage() {
                 <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
                   {playlists.map((playlist, index) => (
                     <PlaylistCard
-                      key={playlist.id}
+                      key={playlist.id || index}
                       id={playlist.id}
                       index={index}
                       title={playlist.title}
                       imageUrl={playlist.imageUrl}
                       videoCount={playlist.videoCount}
                       moveCard={moveCard}
-                      onClick={() => setSelectedPlaylist(playlist)} // Set the selected playlist
+                      onClick={() => setSelectedPlaylist(playlist)}
                     />
                   ))}
                 </div>
@@ -241,26 +255,22 @@ export default function DashboardPage() {
                   <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4' />
                   <Input
                     placeholder='Search Project...'
-                    className='pl-10 w-64 bg-[#1C1C24] border-[#2E2E3A] text-white'
+                    className='pl-10 w-64 bg-[#1C1C24] border-[#2E2E3A] text-sm text-white placeholder:text-muted-foreground'
                   />
                 </div>
-                <div>
-                  <ProfileButton />
-                </div>
+                <ProfileButton />
               </div>
             </div>
           </header>
-          <div className='flex-1 overflow-hidden flex'>
-            <main className='flex-1 overflow-auto p-6 flex flex-col'>
+          <main className='flex-1 flex overflow-hidden'>
+            <div className='flex-1 flex flex-col overflow-auto p-4'>
               {renderContent()}
-            </main>
-            {activeView === "product-playlists" && (
-              <RightSidebar
-                playlist={selectedPlaylist}
-                playlistItems={isLoadingPlaylistItems ? [] : playlistItems} // Show skeleton or actual data
-              />
-            )}
-          </div>
+            </div>
+            <RightSidebar
+              playlist={selectedPlaylist}
+              playlistItems={isLoadingPlaylistItems ? [] : playlistItems} // Show skeleton or actual data
+            />
+          </main>
         </div>
       </div>
     </DndProvider>
