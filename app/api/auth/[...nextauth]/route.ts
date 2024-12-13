@@ -24,7 +24,7 @@ export const getUserSession = async (): Promise<User | null> => {
 // Validate environment variables
 const NEXT_PUBLIC_GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID
 const NEXT_PUBLIC_GOOGLE_CLIENT_SECRET =
-  process.env.NEXT_PUBLIC_GOOGLE_CLIENT_SECRETv
+  process.env.NEXT_PUBLIC_GOOGLE_CLIENT_SECRET
 const NEXTAUTH_SECRET = process.env.NEXTAUTH_SECRET
 
 if (
