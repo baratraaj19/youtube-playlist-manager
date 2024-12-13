@@ -57,6 +57,7 @@ export default function DashboardPage() {
 
     const apiKey: any = process.env.NEXT_PUBLIC_YOUTUBE_API_KEY
     const accessToken: any = (session as any).accessToken
+    console.log(accessToken)
     try {
       setIsLoadingPlaylists(true)
       const playlistsData = await fetchPlaylists(apiKey, accessToken)
