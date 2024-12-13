@@ -70,8 +70,6 @@ export async function fetchPlaylistItems(
   accessToken: string
 ) {
   try {
-    console.log("Fetching playlist items...")
-
     // Construct the API URL with the provided playlistId
     const playlistItemsResponse = await fetch(
       `https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=${playlistId}&key=${apiKey}`,

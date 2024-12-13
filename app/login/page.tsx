@@ -9,8 +9,6 @@ export default function LoginPage() {
   const router = useRouter()
   const { data: session, status } = useSession()
 
-  console.log("checkthis", session?.user)
-
   useEffect(() => {
     console.log(status)
 
