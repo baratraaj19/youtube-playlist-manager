@@ -24,7 +24,7 @@ export const getUserSession = async (): Promise<User | null> => {
 // Validate environment variables
 const NEXT_PUBLIC_GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID
 const NEXT_PUBLIC_GOOGLE_CLIENT_SECRET =
-  process.env.NEXT_PUBLIC_GOOGLE_CLIENT_SECRET
+  process.env.NEXT_PUBLIC_GOOGLE_CLIENT_SECRETv
 const NEXTAUTH_SECRET = process.env.NEXTAUTH_SECRET
 
 if (
@@ -140,19 +140,20 @@ const authOption: NextAuthOptions = {
   ],
   callbacks: {
     async signIn({ account, profile }) {
+      console.log("SignIn callback:", { account, profile })
       if (!profile?.email) {
         console.error("No email in profile")
         return false
       }
-
       await insertUserData(profile, account)
       return true
     },
     async redirect({ url, baseUrl }) {
-      console.log("Redirect URL:", url, "Base URL:", baseUrl)
+      console.log("Redirect callback:", { url, baseUrl })
       return `${baseUrl}/dashboard`
     },
     session({ session, token }) {
+      console.log("Session callback:", { session, token })
       if (session.user) {
         ;(session.user as any).id = token.id
         ;(session as any).accessToken = token.access_token
@@ -160,6 +161,7 @@ const authOption: NextAuthOptions = {
       return session
     },
     async jwt({ token, account }) {
+      console.log("JWT callback:", { token, account })
       if (account?.access_token) {
         token.access_token = account.access_token
       }
