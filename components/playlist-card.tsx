@@ -52,6 +52,8 @@ export function PlaylistCard({
         <Image
           src={imageUrl}
           alt={title}
+          width={355}
+          height={355}
           className='w-full aspect-video object-cover rounded-t-xl'
         />
         <div className='absolute inset-0 bg-gradient-to-b from-transparent to-black/80 rounded-xl' />

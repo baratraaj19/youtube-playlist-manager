@@ -84,6 +84,8 @@ export function RightSidebar({
                 <Image
                   src={video.snippet.thumbnails.medium.url}
                   alt={video.snippet.title}
+                  width={150}
+                  height={450}
                   className=' h-20 rounded-md'
                 />
                 <div className='flex-1'>

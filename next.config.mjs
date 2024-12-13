@@ -7,6 +7,9 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true, // Ignores ESLint during production build
   },
+  images: {
+    domains: ["i.ytimg.com"], // Add the required hostname
+  },
 }
 
 export default nextConfig
