@@ -138,23 +138,19 @@ const authOption: NextAuthOptions = {
       },
     }),
   ],
+  callbacks: {
+    async signIn({ account, profile }) {
+      if (!profile?.email) {
+        console.error("No email in profile")
+        return false
+      }
+
+      await insertUserData(profile, account)
+      return true
+    },
+  },
 }
 
-//   providers: [
-//     GoogleProvider({
-//       clientId: NEXT_PUBLIC_GOOGLE_CLIENT_ID,
-//       clientSecret: NEXT_PUBLIC_GOOGLE_CLIENT_SECRET,
-//       authorization: {
-//         params: {
-//           scope:
-//             "openid profile email https://www.googleapis.com/auth/youtube.readonly",
-//           access_type: "offline",
-//           response_type: "code",
-//           prompt: "consent",
-//         },
-//       },
-//     }),
-//   ],
 //   callbacks: {
 //     async signIn({ account, profile }) {
 //       if (!profile?.email) {
@@ -182,7 +178,6 @@ const authOption: NextAuthOptions = {
 //       }
 //       return token
 //     },
-//   },
 // }
 
 const handler = NextAuth(authOption)
