@@ -138,17 +138,6 @@ const authOption: NextAuthOptions = {
       },
     }),
   ],
-  callbacks: {
-    async signIn({ account, profile }) {
-      if (!profile?.email) {
-        console.error("No email in profile")
-        return false
-      }
-
-      await insertUserData(profile, account)
-      return true
-    },
-  },
 }
 
 //   callbacks: {
