@@ -18,12 +18,6 @@ export default function LoginPage() {
     }
   }, [status, router])
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    // For testing, just redirect to dashboard
-    router.push("/dashboard")
-  }
-
   const handleGoogleSignIn = async () => {
     try {
       await signIn("google", { callbackUrl: "/dashboard" })
@@ -43,21 +37,6 @@ export default function LoginPage() {
           <CardTitle className='text-2xl text-center'>Welcome Back</CardTitle>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className='space-y-4'>
-            <div className='space-y-2'>
-              <Input
-                type='email'
-                placeholder='Enter your email'
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </div>
-            <Button type='submit' className='w-full'>
-              Sign In
-            </Button>
-          </form>
-          {/* Google Sign-In button */}
           <Button
             variant='outline'
             className='w-full mt-4'

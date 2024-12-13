@@ -7,7 +7,7 @@ import { supabase } from "@/lib/supabase"
 // This function will be used to get the user session
 export const session = async ({ session, token }: any) => {
   session.user.id = token.id
-  session.accessToken = token.access_token // Pass the access token here
+  session.accessToken = token.access_token
   return session
 }
 
@@ -102,7 +102,7 @@ const insertUserData = async (profile: any, account: any) => {
 }
 
 const authOption: NextAuthOptions = {
-  secret: NEXT_PUBLIC_NEXTAUTH_SECRET, // Add this line
+  secret: NEXT_PUBLIC_NEXTAUTH_SECRET,
   debug: true,
   session: {
     strategy: "jwt",
@@ -110,7 +110,7 @@ const authOption: NextAuthOptions = {
   },
   pages: {
     signIn: "/login",
-    error: "/login", // Error code passed in query string as ?error=
+    error: "/login",
   },
   cookies: {
     sessionToken: {
@@ -130,7 +130,7 @@ const authOption: NextAuthOptions = {
       authorization: {
         params: {
           scope:
-            "openid profile email https://www.googleapis.com/auth/youtube.readonly", // Add this line
+            "openid profile email https://www.googleapis.com/auth/youtube.readonly",
           access_type: "offline",
           response_type: "code",
           prompt: "consent",
@@ -153,14 +153,14 @@ const authOption: NextAuthOptions = {
     },
     session({ session, token }) {
       if (session.user) {
-        ;(session.user as any).id = token.id // Type assertion to avoid TypeScript error
-        ;(session as any).accessToken = token.access_token // Type assertion to avoid TypeScript error
+        ;(session.user as any).id = token.id
+        ;(session as any).accessToken = token.access_token
       }
       return session
     },
     async jwt({ token, account }) {
       if (account?.access_token) {
-        token.access_token = account.access_token // Save access token from Google OAuth
+        token.access_token = account.access_token
       }
       return token
     },
