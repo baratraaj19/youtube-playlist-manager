@@ -18,11 +18,20 @@ interface RightSidebarProps {
     title: string
     videos: Video[]
   } | null
-  playlistItems: any[] // Playlist items fetched using the API
+  playlistItems: any[]
+  setSelectedPlaylist: (playlist: any) => void
 }
 
-export function RightSidebar({ playlist, playlistItems }: RightSidebarProps) {
+export function RightSidebar({
+  playlist,
+  playlistItems,
+  setSelectedPlaylist,
+}: RightSidebarProps) {
   if (!playlist) return null
+
+  const handleUpdatePlaylist = () => {
+    setSelectedPlaylist(playlist)
+  }
 
   return (
     <div className='w-4/12 border-l border-[#2E2E3A] bg-[#1C1C24] flex flex-col'>
@@ -93,7 +102,9 @@ export function RightSidebar({ playlist, playlistItems }: RightSidebarProps) {
         </ScrollArea>
       </div>
       <div className='p-4 border-t border-[#2E2E3A]'>
-        <Button className='w-full bg-[#3A3AF1] hover:bg-[#3A3AF1]/80 text-white'>
+        <Button
+          onClick={handleUpdatePlaylist}
+          className='w-full bg-[#3A3AF1] hover:bg-[#3A3AF1]/80 text-white'>
           Update Playlist
         </Button>
       </div>

@@ -11,7 +11,6 @@ import {
   List,
   Calendar,
   Users,
-  ChevronDown,
 } from "lucide-react"
 import {
   Accordion,
@@ -22,20 +21,18 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 const menuItems = [
-  { icon: BarChart, label: "Revenue", href: "/dashboard/revenue" },
-  { icon: Video, label: "Shoppable Video", href: "/dashboard/video" },
-  { icon: BookOpen, label: "Story", href: "/dashboard/story" },
-  { icon: ShoppingCart, label: "Live Commerce", href: "/dashboard/commerce" },
+  { icon: BarChart, label: "Revenue", href: "#" },
+  { icon: Video, label: "Shoppable Video", href: "#" },
+  { icon: BookOpen, label: "Story", href: "#" },
+  { icon: ShoppingCart, label: "Live Commerce", href: "#" },
   {
     icon: List,
     label: "Playlist Manager",
-    href: "/dashboard/playlists",
-    subItems: [
-      { label: "YouTube Playlists", href: "/dashboard/playlists/youtube" },
-    ],
+    href: "/dashboard",
+    subItems: [{ label: "YouTube Playlists", href: "/dashboard" }],
   },
-  { icon: Calendar, label: "Calendar", href: "/dashboard/calendar" },
-  { icon: Users, label: "Hire Influencer", href: "/dashboard/influencers" },
+  { icon: Calendar, label: "Calendar", href: "#" },
+  { icon: Users, label: "Hire Influencer", href: "#" },
 ]
 
 interface SidebarProps {
@@ -48,7 +45,7 @@ export function Sidebar({ onViewChange }: SidebarProps) {
 
   const handleItemClick = (href: string) => {
     if (href === "/dashboard") {
-      onViewChange("dashboard")
+      onViewChange("product-playlists")
     } else {
       onViewChange("coming-soon")
     }

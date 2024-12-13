@@ -244,12 +244,6 @@ export default function DashboardPage() {
             </div>
           </>
         )
-      case "youtube-playlists":
-        return (
-          <div className='flex items-center justify-center h-full'>
-            <h2 className='text-2xl font-bold text-white'>YouTube Playlists</h2>
-          </div>
-        )
       default:
         return (
           <div className='flex items-center justify-center h-full'>
@@ -298,6 +292,7 @@ export default function DashboardPage() {
             <RightSidebar
               playlist={selectedPlaylist}
               playlistItems={isLoadingPlaylistItems ? [] : playlistItems}
+              setSelectedPlaylist={setSelectedPlaylist} // Passing the function here
             />
           </main>
         </div>
