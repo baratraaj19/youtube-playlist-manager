@@ -112,17 +112,17 @@ const authOption: NextAuthOptions = {
     signIn: "/login",
     error: "/login",
   },
-  // cookies: {
-  //   sessionToken: {
-  //     name: `next-auth.session-token`,
-  //     options: {
-  //       httpOnly: true,
-  //       sameSite: "lax",
-  //       path: "/",
-  //       secure: process.env.NODE_ENV === "production",
-  //     },
-  //   },
-  // },
+  cookies: {
+    sessionToken: {
+      name: `next-auth.session-token`,
+      options: {
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+        secure: process.env.NODE_ENV === "production",
+      },
+    },
+  },
   providers: [
     GoogleProvider({
       clientId: NEXT_PUBLIC_GOOGLE_CLIENT_ID,
