@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -9,7 +9,6 @@ import { signIn, useSession } from "next-auth/react"
 export default function LoginPage() {
   const router = useRouter()
   const { data: session, status } = useSession()
-  const [email, setEmail] = useState("")
 
   useEffect(() => {
     if (status === "authenticated") {

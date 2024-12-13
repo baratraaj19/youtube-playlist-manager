@@ -184,7 +184,6 @@ export default function DashboardPage() {
       toast.error("Error loading layout")
     }
   }
-  window.dispatchEvent(new Event("focus"))
 
   const renderContent = () => {
     switch (activeView) {

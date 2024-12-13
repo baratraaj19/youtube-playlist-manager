@@ -149,6 +149,7 @@ const authOption: NextAuthOptions = {
       return true
     },
     async redirect({ url, baseUrl }) {
+      console.log("Redirect URL:", url, "Base URL:", baseUrl)
       return `${baseUrl}/dashboard`
     },
     session({ session, token }) {
