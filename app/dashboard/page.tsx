@@ -44,13 +44,13 @@ export default function DashboardPage() {
     }
   }
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      handleTabSwitch()
-    }, 1000)
+  // useEffect(() => {
+  //   const timer = setTimeout(() => {
+  //     handleTabSwitch()
+  //   }, 1000)
 
-    return () => clearTimeout(timer)
-  }, [])
+  //   return () => clearTimeout(timer)
+  // }, [])
 
   const fetchPlaylistsData = async () => {
     if (!session || !(session as any).accessToken) return
@@ -198,7 +198,6 @@ export default function DashboardPage() {
               <div className='space-x-4'>
                 <Button
                   onClick={fetchPlaylistsData}
-                  id='fetchbtn'
                   className='bg-[#3A3AF1] hover:bg-[#3A3AF1]/80 text-white'>
                   Get My Playlist
                 </Button>

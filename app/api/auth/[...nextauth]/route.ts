@@ -127,6 +127,15 @@ const authOption: NextAuthOptions = {
     GoogleProvider({
       clientId: NEXT_PUBLIC_GOOGLE_CLIENT_ID,
       clientSecret: NEXT_PUBLIC_GOOGLE_CLIENT_SECRET,
+      authorization: {
+        params: {
+          scope:
+            "openid profile email https://www.googleapis.com/auth/youtube.readonly",
+          access_type: "offline",
+          response_type: "code",
+          prompt: "consent",
+        },
+      },
     }),
   ],
 }
