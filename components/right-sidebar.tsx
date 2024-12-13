@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import Image from "next/image"
 
 interface Video {
   id: string
@@ -80,7 +81,7 @@ export function RightSidebar({
               <div
                 key={video.id}
                 className='flex items-center bg-[#13131A] border-[#2E2E3A]  p-2 rounded-xl px-4 space-x-4 mb-4'>
-                <img
+                <Image
                   src={video.snippet.thumbnails.medium.url}
                   alt={video.snippet.title}
                   className=' h-20 rounded-md'

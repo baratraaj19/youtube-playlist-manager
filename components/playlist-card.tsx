@@ -3,6 +3,7 @@
 import { useDrag, useDrop } from "react-dnd"
 import { Card } from "@/components/ui/card"
 import { MoreHorizontal } from "lucide-react"
+import Image from "next/image"
 
 interface PlaylistCardProps {
   id: string
@@ -48,7 +49,7 @@ export function PlaylistCard({
       className='transition-shadow duration-200 hover:shadow-lg cursor-pointer'
       onClick={onClick}>
       <Card className='relative overflow-hidden group bg-[#1C1C24] rounded-xl border border-[#2E2E3A]'>
-        <img
+        <Image
           src={imageUrl}
           alt={title}
           className='w-full aspect-video object-cover rounded-t-xl'
