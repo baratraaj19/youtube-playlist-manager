@@ -1,7 +1,38 @@
 export async function fetchPlaylists(apiKey: string, accessToken: string) {
   try {
+    console.log("Fetching channel ID...")
+
+    // Fetch the channel ID first
+    const channelResponse = await fetch(
+      `https://www.googleapis.com/youtube/v3/channels?part=id&mine=true&key=${apiKey}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          Accept: "application/json",
+        },
+      }
+    )
+
+    if (!channelResponse.ok) {
+      throw new Error(
+        `Failed to fetch channel ID. Status: ${channelResponse.status}`
+      )
+    }
+
+    const channelData = await channelResponse.json()
+
+    if (!channelData.items || channelData.items.length === 0) {
+      throw new Error("No channel found for the authenticated user.")
+    }
+
+    const channelId = channelData.items[0].id // Extract the channel ID
+
+    console.log("Fetching playlists for channel ID...")
+
+    // Fetch playlists for the channel ID
     const playlistResponse = await fetch(
-      `https://www.googleapis.com/youtube/v3/playlists?part=snippet%2CcontentDetails&maxResults=25&mine=true&key=${apiKey}`,
+      `https://www.googleapis.com/youtube/v3/playlists?part=snippet%2CcontentDetails&maxResults=25&channelId=${channelId}&key=${apiKey}`,
       {
         method: "GET",
         headers: {
@@ -18,6 +49,7 @@ export async function fetchPlaylists(apiKey: string, accessToken: string) {
     }
 
     const data = await playlistResponse.json()
+    console.log("Playlists Data Response:", data) // Log the API response
 
     // Map the API response to match the component's format
     return data.items.map((playlist: any) => ({
