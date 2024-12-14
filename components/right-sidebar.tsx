@@ -81,19 +81,21 @@ export function RightSidebar({
               <div
                 key={video.id}
                 className='flex items-center bg-[#13131A] border-[#2E2E3A]  p-2 rounded-xl px-4 space-x-4 mb-4'>
-                <Image
-                  src={video.snippet.thumbnails.medium.url}
-                  alt={video.snippet.title}
-                  width={150}
-                  height={450}
-                  className=' h-20 rounded-md'
-                />
-                <div className='flex-1'>
-                  <h4 className='font-medium text-white'>
-                    {video.snippet.title}
-                  </h4>
-                  <p className='text-sm text-gray-400'>{video.duration}</p>
-                </div>
+                <a href={video.videoUrl} target='_blank'>
+                  <Image
+                    src={video.snippet.thumbnails.medium.url}
+                    alt={video.snippet.title}
+                    width={150}
+                    height={450}
+                    className=' h-20 rounded-md'
+                  />
+                  <div className='flex-1'>
+                    <h4 className='font-medium text-white'>
+                      {video.snippet.title}
+                    </h4>
+                    <p className='text-sm text-gray-400'>{video.duration}</p>
+                  </div>
+                </a>
                 <input
                   type='checkbox'
                   className='rounded text-blue-500 bg-[#13131A] border-[#2E2E3A]'

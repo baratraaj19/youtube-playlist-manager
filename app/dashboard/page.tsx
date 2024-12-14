@@ -52,48 +52,6 @@ export default function DashboardPage() {
     return () => clearTimeout(timer)
   }, [])
 
-  // const fetchPlaylistsData = async () => {
-  //   if (!session || !(session as any).accessToken) return
-
-  //   const apiKey: any = process.env.NEXT_PUBLIC_YOUTUBE_API_KEY
-  //   const accessToken: any = (session as any).accessToken
-  //   try {
-  //     setIsLoadingPlaylists(true)
-  //     const playlistsData = await fetchPlaylists(apiKey, accessToken)
-  //     setPlaylists(playlistsData)
-  //     toast.success("PlayList Loaded successfully!")
-  //   } catch (error) {
-  //     console.error("Error fetching playlists:", error)
-  //     toast.error("Error fetching playlists!")
-  //   } finally {
-  //     setIsLoadingPlaylists(false)
-  //   }
-  // }
-
-  // useEffect(() => {
-  //   if (selectedPlaylist) {
-  //     const fetchItems = async () => {
-  //       setIsLoadingPlaylistItems(true)
-  //       const apiKey: any = process.env.NEXT_PUBLIC_YOUTUBE_API_KEY
-  //       const accessToken: any = (session as any).accessToken
-  //       try {
-  //         const items = await fetchPlaylistItems(
-  //           selectedPlaylist.id,
-  //           apiKey,
-  //           accessToken
-  //         )
-  //         setPlaylistItems(items)
-  //       } catch (error) {
-  //         console.error("Error fetching playlist items:", error)
-  //         toast.error("Error fetching playlist items!")
-  //       } finally {
-  //         setIsLoadingPlaylistItems(false)
-  //       }
-  //     }
-  //     fetchItems()
-  //   }
-  // }, [selectedPlaylist])
-
   const fetchPlaylistsData = async () => {
     if (!session || !(session as any).accessToken) return
 
