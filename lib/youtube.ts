@@ -84,7 +84,6 @@ export async function fetchPlaylistItems(
     }
 
     const playlistData = await playlistItemsResponse.json()
-    console.log("log:", playlistData)
     // Process each video and fetch the duration
     const itemsWithDuration = await Promise.all(
       playlistData.items.map(async (item: any) => {

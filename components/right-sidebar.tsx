@@ -80,14 +80,17 @@ export function RightSidebar({
             {playlistItems.map((video: any) => (
               <div
                 key={video.id}
-                className='flex items-center bg-[#13131A] border-[#2E2E3A]  p-2 rounded-xl px-4 space-x-4 mb-4'>
-                <a href={video.videoUrl} target='_blank'>
+                className='flex items-center justify-between bg-[#13131A] border-[#2E2E3A] p-2 rounded-xl px-4 mb-4'>
+                <a
+                  href={video.videoUrl}
+                  target='_blank'
+                  className='flex items-center rounded-xl space-x-4'>
                   <Image
                     src={video.snippet.thumbnails.medium.url}
                     alt={video.snippet.title}
                     width={150}
                     height={450}
-                    className=' h-20 rounded-md'
+                    className='h-20 rounded-md'
                   />
                   <div className='flex-1'>
                     <h4 className='font-medium text-white'>
@@ -98,7 +101,7 @@ export function RightSidebar({
                 </a>
                 <input
                   type='checkbox'
-                  className='rounded text-blue-500 bg-[#13131A] border-[#2E2E3A]'
+                  className='rounded text-blue-500 bg-[#13131A] border-[#2E2E3A] px-2'
                 />
               </div>
             ))}
